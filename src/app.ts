@@ -1,0 +1,33 @@
+import express from "express";
+import { connectDb } from "./config/db";
+import authRouter from "./routes/auth.route";
+import { errorMiddleware } from "./middleware/error.middleware";
+import cookieParser from "cookie-parser";
+import { PORT } from "./config/env";
+import cors from "cors";
+import passport from "passport";
+import "@/config/passport";
+
+const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+app.use(passport.initialize());
+app.use(express.json());
+app.use(cookieParser());
+
+app.use("/api/v1/auth", authRouter);
+
+app.use(errorMiddleware);
+
+connectDb(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
+    console.log(`BASE URL: http://localhost:${PORT}/api/v1`);
+  });
+});
