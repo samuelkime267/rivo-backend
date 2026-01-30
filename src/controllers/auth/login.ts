@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { LoginSchemaType } from "@/schemas/auth";
 import User from "@/models/user.model";
 import { CustomError } from "@/types";
-import { generateToken } from "@/utils";
+import { generateJwtToken } from "@/utils";
 import bcrypt from "bcryptjs";
 
 export const login = async (
@@ -19,6 +19,12 @@ export const login = async (
       error.statusCode = 400;
       throw error;
     }
+    if (!existingUser.password || existingUser.authProvider !== "local") {
+      const error = new Error() as CustomError;
+      error.message = `Login using provider used previously: ${existingUser.authProvider}`;
+      error.statusCode = 400;
+      throw error;
+    }
 
     const isPasswordCorrect = await bcrypt.compare(
       password,
@@ -31,7 +37,7 @@ export const login = async (
       throw error;
     }
 
-    const token = generateToken(existingUser._id);
+    const token = generateJwtToken(existingUser._id);
 
     res
       .cookie("refreshToken", token.refreshToken, {

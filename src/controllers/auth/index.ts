@@ -4,3 +4,7 @@ export * from "./refreshToken";
 export * from "./logout";
 export * from "./googleOAuthCallback";
 export * from "./googleOAuthLogin";
+export * from "./sendVerificationEmail";
+export * from "./verifyEmail";
+export * from "./sendResetPasswordLink";
+export * from "./resetPassword";

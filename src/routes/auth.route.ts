@@ -6,8 +6,17 @@ import {
   refreshToken,
   googleOAuthCallback,
   googleOAuthLogin,
+  sendVerificationEmail,
+  verifyEmail,
+  sendResetPasswordLink,
+  resetPassword,
 } from "@/controllers/auth";
-import { loginValidator, registerValidator } from "@/validators/auth.validator";
+import {
+  loginValidator,
+  registerValidator,
+  sendResetPasswordLinkValidator,
+  updatePasswordValidator,
+} from "@/validators/auth.validator";
 import { isValidRefreshToken, isAuthenticated } from "@/middleware";
 import passport from "passport";
 
@@ -22,6 +31,19 @@ authRouter.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
   googleOAuthCallback,
+);
+authRouter.post("/verify-email", isAuthenticated, sendVerificationEmail);
+authRouter.get("/verify-email/:token", isAuthenticated, verifyEmail);
+
+authRouter.post(
+  "/forgot-password",
+  sendResetPasswordLinkValidator,
+  sendResetPasswordLink,
+);
+authRouter.post(
+  "/reset-password/:token",
+  updatePasswordValidator,
+  resetPassword,
 );
 
 export default authRouter;

@@ -1,31 +1,22 @@
-import { Types } from "mongoose";
-import {
-  JWT_ACCESS_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN,
-  JWT_SECRET,
-} from "../config/env";
-import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
-export const generateToken = (
-  _id: string | Types.ObjectId,
-  onlyAccess = false,
-) => {
-  if (typeof _id !== "string") _id = _id.toString();
+export const generateToken = (options = { expiresInMinutes: 10 }) => {
+  const { expiresInMinutes } = options;
 
-  const payload = { id: _id };
+  // generate secure random 32-byte token
+  const token = crypto.randomBytes(32).toString("hex");
 
-  const accessToken = jwt.sign({ ...payload, type: "access" }, JWT_SECRET, {
-    expiresIn: JWT_ACCESS_EXPIRES_IN,
-  });
+  // hash it before storing in DB
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-  if (onlyAccess) return { accessToken };
-
-  const refreshToken = jwt.sign({ ...payload, type: "refresh" }, JWT_SECRET, {
-    expiresIn: JWT_REFRESH_EXPIRES_IN,
-  });
+  // optional expiry date
+  const expiresAt = expiresInMinutes
+    ? new Date(Date.now() + expiresInMinutes * 60 * 1000)
+    : undefined;
 
   return {
-    accessToken,
-    refreshToken,
+    token,
+    hashedToken,
+    expiresAt,
   };
 };

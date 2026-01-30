@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { RegisterSchemaType } from "@/schemas/auth";
 import User from "@/models/user.model";
 import { CustomError } from "@/types";
-import { generateToken } from "@/utils";
+import { generateJwtToken } from "@/utils";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
@@ -32,7 +32,7 @@ export const register = async (
       password: hashedPassword,
     });
 
-    const token = generateToken(user._id);
+    const token = generateJwtToken(user._id);
 
     await session.commitTransaction();
     session.endSession();

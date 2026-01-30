@@ -1,5 +1,5 @@
 import { UserDocument } from "@/models/user.model";
-import { generateToken } from "@/utils";
+import { generateJwtToken } from "@/utils";
 import { NextFunction, Request, Response } from "express";
 
 export const googleOAuthCallback = async (
@@ -8,7 +8,7 @@ export const googleOAuthCallback = async (
   next: NextFunction,
 ) => {
   const user = req.user as UserDocument;
-  const token = generateToken(user._id);
+  const token = generateJwtToken(user._id);
 
   res
     .cookie("refreshToken", token.refreshToken, {

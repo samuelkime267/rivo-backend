@@ -1,6 +1,5 @@
 import mongoose, { InferSchemaType, Types } from "mongoose";
 import { Document } from "mongoose";
-import { profile } from "node:console";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -37,6 +36,30 @@ const userSchema = new mongoose.Schema({
   isEmailVerified: {
     type: Boolean,
     default: false,
+  },
+  emailVerificationToken: {
+    type: String,
+    default: null,
+  },
+  emailVerificationTokenExpiryDate: {
+    type: Date,
+    default: null,
+  },
+  passwordResetToken: {
+    type: String,
+    default: null,
+  },
+  passwordResetTokenExpiryDate: {
+    type: Date,
+    default: null,
+  },
+  otpLastSentAt: {
+    type: Date,
+    default: null,
+  },
+  otpAttempts: {
+    type: Number,
+    default: 0,
   },
 });
 

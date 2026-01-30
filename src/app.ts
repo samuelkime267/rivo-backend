@@ -7,6 +7,7 @@ import { PORT } from "./config/env";
 import cors from "cors";
 import passport from "passport";
 import "@/config/passport";
+import userRouter from "./routes/user.route";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use(errorMiddleware);
 
