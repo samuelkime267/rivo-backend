@@ -27,11 +27,7 @@ authRouter.post("/login", loginValidator, login);
 authRouter.post("/logout", isAuthenticated, isValidRefreshToken, logout);
 authRouter.post("/refresh-token", isValidRefreshToken, refreshToken);
 authRouter.get("/google", googleOAuthLogin);
-authRouter.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  googleOAuthCallback,
-);
+authRouter.get("/google/callback", googleOAuthCallback);
 authRouter.post("/verify-email", isAuthenticated, sendVerificationEmail);
 authRouter.get("/verify-email/:token", isAuthenticated, verifyEmail);
 

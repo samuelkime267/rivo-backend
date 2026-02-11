@@ -70,7 +70,9 @@ export const sendResetPasswordLink = async (
     await sendMail({
       to: user.email,
       subject: "Password Reset Link",
-      html: passwordResetTemplate(`${FRONTEND_URL}/reset-password/${token}`),
+      html: passwordResetTemplate(
+        `${FRONTEND_URL}/auth/reset-password/${token}`,
+      ),
     });
 
     res.status(200).json({

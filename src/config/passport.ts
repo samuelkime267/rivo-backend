@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "@/models/user.model";
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "./env";
+import { CustomError } from "@/types";
 
 passport.use(
   new GoogleStrategy(
@@ -16,7 +17,19 @@ passport.use(
         const profilePicture = profile.photos?.[0].value;
 
         if (!email) {
-          return done(new Error("No email from Google"), undefined);
+          const error = new Error("No email from Google") as CustomError;
+          error.statusCode = 400;
+          return done(error, undefined);
+        }
+
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser && existingUser.authProvider !== "google") {
+          const error = new Error(
+            "User already exists with a different provider",
+          ) as CustomError;
+          error.statusCode = 400;
+          return done(error, undefined);
         }
 
         let user = await User.findOne({

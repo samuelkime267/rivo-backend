@@ -15,10 +15,18 @@ export const register = async (
   session.startTransaction();
   try {
     const { email, name, username, password } = req.body as RegisterSchemaType;
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
+    const existingUserEmail = await User.findOne({ email });
+    const existingUserUsername = await User.findOne({ username });
+
+    if (existingUserEmail) {
       const error = new Error() as CustomError;
-      error.message = "User with given email or username already exists";
+      error.message = "User with given email already exists";
+      error.statusCode = 400;
+      throw error;
+    }
+    if (existingUserUsername) {
+      const error = new Error() as CustomError;
+      error.message = "User with given username already exists";
       error.statusCode = 400;
       throw error;
     }
