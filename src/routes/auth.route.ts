@@ -18,7 +18,6 @@ import {
   updatePasswordValidator,
 } from "@/validators/auth.validator";
 import { isValidRefreshToken, isAuthenticated } from "@/middleware";
-import passport from "passport";
 
 const authRouter = Router();
 
