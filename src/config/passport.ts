@@ -3,6 +3,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "@/models/user.model";
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "./env";
 import { CustomError } from "@/types";
+import { generateStreamKey } from "@/utils";
 
 passport.use(
   new GoogleStrategy(
@@ -38,6 +39,7 @@ passport.use(
         });
 
         if (!user) {
+          const { encryptedStreamKey } = generateStreamKey();
           user = await User.create({
             email,
             name: profile.displayName,
@@ -45,6 +47,7 @@ passport.use(
             providerId: profile.id,
             profilePicture,
             isEmailVerified: true,
+            streamKey: encryptedStreamKey,
           });
         }
 

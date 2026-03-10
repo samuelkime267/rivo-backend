@@ -25,7 +25,8 @@ export const googleOAuthCallback = async (
                   message: '${err?.message || "Authentication failed"}',
                   statusCode: ${err?.statusCode || 400}, 
                   success: false,
-                  from:"oauth"
+                  from:"oauth",
+                  error: ${JSON.stringify(err)}
                   },
                   'http://localhost:5173'
                 );

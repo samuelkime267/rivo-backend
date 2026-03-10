@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { RegisterSchemaType } from "@/schemas/auth";
 import User from "@/models/user.model";
 import { CustomError } from "@/types";
-import { generateJwtToken } from "@/utils";
+import { generateJwtToken, generateStreamKey } from "@/utils";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
@@ -32,12 +32,14 @@ export const register = async (
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const { encryptedStreamKey } = generateStreamKey();
 
     const user = await User.create({
       email,
       name,
       username,
       password: hashedPassword,
+      streamKey: encryptedStreamKey,
     });
 
     const token = generateJwtToken(user._id);

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { hashKey } from "./hashKey";
 
 export const generateToken = (options = { expiresInMinutes: 10 }) => {
   const { expiresInMinutes } = options;
@@ -7,7 +8,7 @@ export const generateToken = (options = { expiresInMinutes: 10 }) => {
   const token = crypto.randomBytes(32).toString("hex");
 
   // hash it before storing in DB
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashedToken = hashKey(token);
 
   // optional expiry date
   const expiresAt = expiresInMinutes

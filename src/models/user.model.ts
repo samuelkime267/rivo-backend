@@ -1,5 +1,4 @@
-import mongoose, { InferSchemaType, Types } from "mongoose";
-import { Document } from "mongoose";
+import mongoose, { InferSchemaType, HydratedDocument } from "mongoose";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -61,6 +60,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  streamKey: {
+    type: String,
+    required: true,
+  },
 });
 
 export type UserType = InferSchemaType<typeof userSchema>;
@@ -68,6 +71,4 @@ export type UserType = InferSchemaType<typeof userSchema>;
 const User = mongoose.model("User", userSchema);
 
 export default User;
-
-export type UserDocument = Document<unknown, any, UserType> &
-  UserType & { _id: Types.ObjectId };
+export type UserDocument = HydratedDocument<UserType>;

@@ -8,6 +8,7 @@ import cors from "cors";
 import passport from "passport";
 import "@/config/passport";
 import userRouter from "./routes/user.route";
+import streamRouter from "./routes/stream.route";
 
 const app = express();
 
@@ -23,11 +24,12 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/stream", streamRouter);
 
 app.use(errorMiddleware);
 
 connectDb(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`http://localhost:${PORT}`);
     console.log(`BASE URL: http://localhost:${PORT}/api/v1`);
