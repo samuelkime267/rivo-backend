@@ -1,5 +1,5 @@
+import { hashKey } from "@/lib/encryption";
 import crypto from "crypto";
-import { hashKey } from "./hashKey";
 
 export const generateToken = (options = { expiresInMinutes: 10 }) => {
   const { expiresInMinutes } = options;

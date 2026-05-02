@@ -14,7 +14,7 @@ export const refreshToken = async (
     res.status(200).json({
       message: "Generated Access Token Successfully",
       success: true,
-      token,
+      data: token,
     });
   } catch (error) {
     next(error);

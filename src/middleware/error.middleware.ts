@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { zodErrorFormatter } from "../utils";
-import { CustomError } from "../types";
+import { zodErrorFormatter } from "@/utils";
+import { CustomError } from "@/types";
 
 export const errorMiddleware = (
   err: any,

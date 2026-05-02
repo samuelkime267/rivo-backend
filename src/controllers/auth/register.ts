@@ -32,7 +32,7 @@ export const register = async (
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const { encryptedStreamKey } = generateStreamKey();
+    const { encryptedStreamKey, hashedStreamKey } = generateStreamKey();
 
     const user = await User.create({
       email,
@@ -40,6 +40,7 @@ export const register = async (
       username,
       password: hashedPassword,
       streamKey: encryptedStreamKey,
+      streamKeyHash: hashedStreamKey,
     });
 
     const token = generateJwtToken(user._id);
@@ -59,8 +60,7 @@ export const register = async (
       .json({
         message: "User created successfully",
         success: true,
-        user,
-        token,
+        data: { user, token },
       });
   } catch (error) {
     await session.abortTransaction();

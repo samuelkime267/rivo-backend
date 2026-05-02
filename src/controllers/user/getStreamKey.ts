@@ -13,7 +13,7 @@ export const getStreamKey = async (
   res.status(200).json({
     message: "User retrieved successfully",
     success: true,
-    user: {
+    data: {
       streamKey: decryptedStreamKey,
     },
   });

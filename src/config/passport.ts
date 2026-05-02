@@ -39,7 +39,7 @@ passport.use(
         });
 
         if (!user) {
-          const { encryptedStreamKey } = generateStreamKey();
+          const { encryptedStreamKey, hashedStreamKey } = generateStreamKey();
           user = await User.create({
             email,
             name: profile.displayName,
@@ -48,6 +48,7 @@ passport.use(
             profilePicture,
             isEmailVerified: true,
             streamKey: encryptedStreamKey,
+            streamKeyHash: hashedStreamKey,
           });
         }
 

@@ -1,4 +1,4 @@
-import { encrypt } from "@/lib/encryption";
+import { hashKey } from "@/lib/encryption";
 import Stream, { DefaultStreamInfo } from "@/models/stream.model";
 import User from "@/models/user.model";
 import { CustomError } from "@/types";
@@ -12,10 +12,10 @@ export const validateStream = async (
   try {
     const { name } = req.body;
 
-    const encryptedKey = encrypt(name);
+    const hashedKey = hashKey(name);
 
     const user = await User.findOne({
-      streamKey: encryptedKey,
+      streamKeyHash: hashedKey,
     });
 
     if (!user) {
@@ -58,7 +58,7 @@ export const validateStream = async (
 
     if (!defaultStreamInfo) {
       const error = new Error() as CustomError;
-      error.message = "Invalid stream key";
+      error.message = "No default stream info found for user";
       error.statusCode = 403;
       throw error;
     }

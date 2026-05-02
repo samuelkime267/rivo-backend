@@ -29,7 +29,7 @@ export const updateDefaultInfo = async (
     res.status(200).json({
       message: "Default Stream Information retrieved successfully",
       success: true,
-      streamInfo: defaultInfo,
+      data: defaultInfo,
     });
   } catch (err) {
     next(err);

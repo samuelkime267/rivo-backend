@@ -26,7 +26,7 @@ export const createStream = async (
     res.status(201).json({
       message: "Stream created successfully",
       success: true,
-      stream,
+      data: stream,
     });
   } catch (error) {
     next(error);

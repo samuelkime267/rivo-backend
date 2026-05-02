@@ -1,31 +1,53 @@
 import crypto from "crypto";
-import { STREAM_KEY_SECRET } from "@/config/env";
+import { STREAM_KEY_SECRET, HASH_SECRET } from "@/config/env";
 
 const algorithm = "aes-256-gcm";
-const key = crypto.createHash("sha256").update(STREAM_KEY_SECRET).digest();
-const ivLength = 16;
+const key = crypto.scryptSync(STREAM_KEY_SECRET, "salt", 32);
+const ivLength = 12;
 
 export function encrypt(text: string) {
   const iv = crypto.randomBytes(ivLength);
+
   const cipher = crypto.createCipheriv(algorithm, key, iv);
 
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  const authTag = cipher.getAuthTag().toString("hex");
+  const encrypted = Buffer.concat([
+    cipher.update(text, "utf8"),
+    cipher.final(),
+  ]);
 
-  return iv.toString("hex") + ":" + authTag + ":" + encrypted;
+  const authTag = cipher.getAuthTag();
+
+  return [
+    iv.toString("base64"),
+    authTag.toString("base64"),
+    encrypted.toString("base64"),
+  ].join(":");
 }
 
 export function decrypt(data: string) {
-  const [ivHex, authTagHex, encrypted] = data.split(":");
-  const iv = Buffer.from(ivHex, "hex");
-  const authTag = Buffer.from(authTagHex, "hex");
+  const parts = data.split(":");
+
+  if (parts.length !== 3) {
+    throw new Error("Malformed encrypted payload");
+  }
+
+  const [ivB64, authTagB64, encryptedB64] = parts;
+
+  const iv = Buffer.from(ivB64, "base64");
+  const authTag = Buffer.from(authTagB64, "base64");
+  const encrypted = Buffer.from(encryptedB64, "base64");
 
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
   decipher.setAuthTag(authTag);
 
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
+  const decrypted = Buffer.concat([
+    decipher.update(encrypted),
+    decipher.final(),
+  ]);
 
-  return decrypted;
+  return decrypted.toString("utf8");
+}
+
+export function hashKey(key: string) {
+  return crypto.createHmac("sha256", HASH_SECRET).update(key).digest("hex");
 }

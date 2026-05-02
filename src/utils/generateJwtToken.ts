@@ -6,10 +6,22 @@ import {
 } from "../config/env";
 import jwt from "jsonwebtoken";
 
-export const generateJwtToken = (
+// overloads
+export function generateJwtToken(
+  _id: string | Types.ObjectId,
+  onlyAccess: true,
+): { accessToken: string };
+
+export function generateJwtToken(
+  _id: string | Types.ObjectId,
+  onlyAccess?: false,
+): { accessToken: string; refreshToken: string };
+
+// implementation
+export function generateJwtToken(
   _id: string | Types.ObjectId,
   onlyAccess = false,
-) => {
+) {
   if (typeof _id !== "string") _id = _id.toString();
 
   const payload = { id: _id };
@@ -18,7 +30,9 @@ export const generateJwtToken = (
     expiresIn: JWT_ACCESS_EXPIRES_IN,
   });
 
-  if (onlyAccess) return { accessToken };
+  if (onlyAccess) {
+    return { accessToken };
+  }
 
   const refreshToken = jwt.sign({ ...payload, type: "refresh" }, JWT_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
@@ -28,4 +42,4 @@ export const generateJwtToken = (
     accessToken,
     refreshToken,
   };
-};
+}

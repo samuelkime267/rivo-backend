@@ -1,5 +1,5 @@
+import { hashKey } from "@/lib/encryption";
 import crypto from "crypto";
-import { hashKey } from "./hashKey";
 
 export const generateOtp = (options = { expiresInMinutes: 10, length: 6 }) => {
   const { expiresInMinutes, length } = options;

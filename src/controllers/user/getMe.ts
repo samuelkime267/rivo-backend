@@ -8,6 +8,6 @@ export const getMe = async (
   res.status(200).json({
     message: "User retrieved successfully",
     success: true,
-    user: req.user,
+    data: req.user,
   });
 };

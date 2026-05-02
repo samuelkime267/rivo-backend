@@ -64,6 +64,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  streamKeyHash: {
+    type: String,
+    required: true,
+  },
 });
 
 export type UserType = InferSchemaType<typeof userSchema>;
